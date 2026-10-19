@@ -74,12 +74,30 @@ No. Todo funciona sin GPU; lo único que cambia es el tiempo. El dataset
 de este curso ya está pensado para entrenar en minutos incluso sin
 tarjeta gráfica.
 
-Para saber si MATLAB está usando la tarjeta, escribe `gpuDevice`: si
-hay una disponible muestra sus datos, y si no, da error.
+Por defecto, `trainnet` usa la tarjeta gráfica automáticamente si la
+detecta (la opción `ExecutionEnvironment` de `trainingOptions` vale
+`'auto'` de serie), así que normalmente no tienes que hacer nada. Si
+quieres comprobar o forzar que la use:
 
-Un aviso por experiencia propia: si el entrenamiento te va
-absurdamente lento *teniendo* tarjeta gráfica, antes de buscar el
-fallo en el código conviene descartar que sea el propio ordenador. Nos
-pasó que la gráfica se quedó "dormida" en su modo de mínimo consumo
-aun estando al 100% de uso, y lo único que lo arregló fue reiniciar el
-equipo.
+```matlab
+gpuDeviceCount   % cuantas tarjetas ve MATLAB (0 = ninguna)
+gpuDevice        % datos de la que usaría por defecto
+```
+
+Si `gpuDeviceCount` da 0 aunque tengas una tarjeta NVIDIA, lo más
+probable es que falte **Parallel Computing Toolbox** (comprúebalo con
+`exist('gpuDevice')`, igual que con las demás toolboxes) o que los
+drivers de la tarjeta estén desactualizados.
+
+Para forzar explícitamente el uso de la GPU (y que falle con un error
+claro si no la encuentra, en vez de seguir en CPU en silencio):
+
+```matlab
+options = trainingOptions('adam', ..., 'ExecutionEnvironment', 'gpu');
+```
+
+Y para forzar CPU, por ejemplo si quieres comparar tiempos:
+
+```matlab
+options = trainingOptions('adam', ..., 'ExecutionEnvironment', 'cpu');
+```
