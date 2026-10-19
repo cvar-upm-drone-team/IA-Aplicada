@@ -103,15 +103,26 @@ mensaje de error es prácticamente el mismo.</p>
 <p>No. Todo funciona sin GPU; lo único que cambia es el tiempo. El
 dataset de este curso ya está pensado para entrenar en minutos incluso
 sin tarjeta gráfica.</p>
-<p>Para saber si MATLAB está usando la tarjeta, escribe
-<code>gpuDevice</code>: si hay una disponible muestra sus datos, y si
-no, da error.</p>
-<p>Un aviso por experiencia propia: si el entrenamiento te va
-absurdamente lento <em>teniendo</em> tarjeta gráfica, antes de buscar el
-fallo en el código conviene descartar que sea el propio ordenador. Nos
-pasó que la gráfica se quedó “dormida” en su modo de mínimo consumo aun
-estando al 100% de uso, y lo único que lo arregló fue reiniciar el
-equipo.</p>
+<p>Por defecto, <code>trainnet</code> usa la tarjeta gráfica
+automáticamente si la detecta (la opción
+<code>ExecutionEnvironment</code> de <code>trainingOptions</code> vale
+<code>'auto'</code> de serie), así que normalmente no tienes que hacer
+nada. Si quieres comprobar o forzar que la use:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode matlab"><code class="sourceCode matlab"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="va">gpuDeviceCount</span>   <span class="co">% cuantas tarjetas ve MATLAB (0 = ninguna)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="va">gpuDevice</span>        <span class="co">% datos de la que usaría por defecto</span></span></code></pre></div>
+<p>Si <code>gpuDeviceCount</code> da 0 aunque tengas una tarjeta NVIDIA,
+lo más probable es que falte <strong>Parallel Computing Toolbox</strong>
+(comprúebalo con <code>exist('gpuDevice')</code>, igual que con las
+demás toolboxes) o que los drivers de la tarjeta estén
+desactualizados.</p>
+<p>Para forzar explícitamente el uso de la GPU (y que falle con un error
+claro si no la encuentra, en vez de seguir en CPU en silencio):</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode matlab"><code class="sourceCode matlab"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="va">options</span> <span class="op">=</span> <span class="va">trainingOptions</span>(<span class="ss">&#39;adam&#39;</span><span class="op">,</span> <span class="op">...,</span> <span class="ss">&#39;ExecutionEnvironment&#39;</span><span class="op">,</span> <span class="ss">&#39;gpu&#39;</span>)<span class="op">;</span></span></code></pre></div>
+<p>Y para forzar CPU, por ejemplo si quieres comparar tiempos:</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode matlab"><code class="sourceCode matlab"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="va">options</span> <span class="op">=</span> <span class="va">trainingOptions</span>(<span class="ss">&#39;adam&#39;</span><span class="op">,</span> <span class="op">...,</span> <span class="ss">&#39;ExecutionEnvironment&#39;</span><span class="op">,</span> <span class="ss">&#39;cpu&#39;</span>)<span class="op">;</span></span></code></pre></div>
 
 </main>
 <footer class="footer">
