@@ -19,40 +19,22 @@ preparado para los ejercicios de clasificación de imágenes de IA Aplicada
 
 ## Tamaño
 
-- **Entrenamiento**: 5000 imágenes/clase → 30000 imágenes (el máximo disponible
-  en CIFAR-10 para estas 6 clases)
-- **Test**: 1000 imágenes/clase → 6000 imágenes (también el máximo disponible)
+- **Entrenamiento**: 2000 imágenes/clase → 12000 imágenes
+- **Test**: 500 imágenes/clase → 3000 imágenes
 - Imágenes de **32×32 píxeles, color (RGB)**
 
-## Variante reducida (para quien no tenga GPU)
-
-Existe una segunda versión, **`cifar_subset_15k.mat`**, con 2000
-train + 500 test por clase (12000 + 3000 = 15000 imágenes, un 42% del
-tamaño del dataset completo). Mismo formato, mismas variables, mismo
-convenio de etiquetas — solo cambia la cantidad de imágenes.
-
-Está pensada para quien no tenga tarjeta gráfica: entrenar la CNN del
-ejercicio 4 en CPU con el dataset completo puede rondar la media hora;
-con esta variante baja a unos minutos, a cambio de entre 1 y 3 puntos
-menos de accuracy (medido con las soluciones de referencia). El orden
-de dificultad entre métodos se mantiene igual con cualquiera de las dos.
-
-**Importante**: los enunciados cargan siempre `data/cifar_subset.mat`
-por nombre fijo. Para usar la variante reducida, descárgala y
-**renómbrala a `cifar_subset.mat`** al colocarla en `data/` — no se
-puede tener las dos a la vez con sus nombres originales sin editar el
-código.
+Es un subconjunto reducido pensado para que los cuatro ejercicios,
+incluida la CNN, entrenen en minutos aunque no tengas tarjeta gráfica.
 
 ## Cómo obtener el dataset
 
-El fichero que necesitas es **`cifar_subset.mat`** (106 MB).
+El fichero que necesitas es **`cifar_subset.mat`** (44 MB).
 
 **→ Descárgalo de la release:** https://github.com/cvar-upm-drone-team/IA-Aplicada/releases/tag/dataset-release-v1
 
-No está dentro del árbol de git porque pesa 105,7 MiB, por encima del
-límite de 100 MiB que GitHub impone a los ficheros versionados; de ahí
-que se distribuya como release. La variante reducida
-(`cifar_subset_15k.mat`) está en la misma release como segundo *asset*.
+No está dentro del árbol de git porque los ficheros binarios de este
+tamaño no se versionan bien en git; de ahí que se distribuya como
+release.
 
 Una vez descargado, colócalo en **`data/cifar_subset.mat`** dentro del
 repositorio: es la ruta donde lo buscan los enunciados
@@ -63,9 +45,6 @@ Verifica la integridad tras descargarlo:
 
 ```bash
 sha256sum cifar_subset.mat
-# 3cb1a3e2969955bd8f30832e96e047d6b4141014bcd0fe12ef8ac80b67369a7c
-
-sha256sum cifar_subset_15k.mat
 # 5a3fd2cd492d19efbe8b208139051e64735fa205f1d66da5e981dad6275c0101
 ```
 
@@ -81,23 +60,23 @@ herramienta estándar):
 
 ```matlab
 d = dir('cifar_subset.mat');
-d.bytes    % debe ser 110880824
+d.bytes    % debe ser 46200824
 ```
 
 ### Verificar que ha salido bien
 
 ```matlab
 load('data/cifar_subset.mat');
-size(X_train)      % 30000  32  32   3
-size(y_train)      % 30000   1
+size(X_train)      % 12000  32  32   3
+size(y_train)      % 12000   1
 unique(y_train)'   % 1 2 3 4 5 6
-histcounts(y_train, 1:7)   % 5000 cada clase
+histcounts(y_train, 1:7)   % 2000 cada clase
 class_names        % 6 nombres, en orden de etiqueta
 ```
 
 ## Uso en Google Colab
 
-El fichero pesa 106 MB y el almacenamiento de Colab se borra al cerrar la
+El fichero pesa 44 MB y el almacenamiento de Colab se borra al cerrar la
 sesión, así que **conviene no volver a descargarlo cada vez**. La vía
 recomendada es subirlo una vez a Google Drive y montar Drive desde el
 notebook:
@@ -133,10 +112,10 @@ cada práctica.
 
 | Variable | Tipo / tamaño | Descripción |
 |---|---|---|
-| `X_train` | `uint8`, `30000×32×32×3` | Imágenes de entrenamiento |
-| `y_train` | `double`, `30000×1` | Etiquetas de entrenamiento (1–6) |
-| `X_test` | `uint8`, `6000×32×32×3` | Imágenes de test |
-| `y_test` | `double`, `6000×1` | Etiquetas de test (1–6) |
+| `X_train` | `uint8`, `12000×32×32×3` | Imágenes de entrenamiento |
+| `y_train` | `double`, `12000×1` | Etiquetas de entrenamiento (1–6) |
+| `X_test` | `uint8`, `3000×32×32×3` | Imágenes de test |
+| `y_test` | `double`, `3000×1` | Etiquetas de test (1–6) |
 | `class_names` | `cell` de 6 strings | Nombres de las clases, en el mismo orden que las etiquetas |
 
 ### Cargar el dataset en MATLAB

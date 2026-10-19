@@ -12,8 +12,8 @@ Colab: [`docs/dataset.md`](../docs/dataset.md).
 
 ```matlab
 load('data/cifar_subset.mat');
-% X_train 30000x32x32x3 uint8, y_train 30000x1 (etiquetas 1..6)
-% X_test   6000x32x32x3 uint8, y_test   6000x1, class_names cell 1x6
+% X_train 12000x32x32x3 uint8, y_train 12000x1 (etiquetas 1..6)
+% X_test   3000x32x32x3 uint8, y_test   3000x1, class_names cell 1x6
 ```
 
 ## Tareas

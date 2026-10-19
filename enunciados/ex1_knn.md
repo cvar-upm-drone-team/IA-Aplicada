@@ -11,8 +11,8 @@ Colab: [`docs/dataset.md`](../docs/dataset.md).
 
 ```matlab
 load('data/cifar_subset.mat');
-% X_train 30000x32x32x3 uint8, y_train 30000x1 (etiquetas 1..6)
-% X_test   6000x32x32x3 uint8, y_test   6000x1, class_names cell 1x6
+% X_train 12000x32x32x3 uint8, y_train 12000x1 (etiquetas 1..6)
+% X_test   3000x32x32x3 uint8, y_test   3000x1, class_names cell 1x6
 ```
 
 ## Tareas
@@ -22,7 +22,7 @@ load('data/cifar_subset.mat');
 Aplana cada imagen de `32×32×3` a un vector de 3072 elementos y
 normaliza a `[0, 1]`. En color: no conviertas a escala de grises.
 
-Deberías acabar con `X_train` de `30000×3072` y `X_test` de `6000×3072`.
+Deberías acabar con `X_train` de `12000×3072` y `X_test` de `3000×3072`.
 
 ### 2. Clasificador KNN base
 

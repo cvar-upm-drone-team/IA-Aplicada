@@ -11,8 +11,8 @@ Colab: [`docs/dataset.md`](../docs/dataset.md).
 
 ```matlab
 load('data/cifar_subset.mat');
-% X_train 30000x32x32x3 uint8, y_train 30000x1 (etiquetas 1..6)
-% X_test   6000x32x32x3 uint8, y_test   6000x1, class_names cell 1x6
+% X_train 12000x32x32x3 uint8, y_train 12000x1 (etiquetas 1..6)
+% X_test   3000x32x32x3 uint8, y_test   3000x1, class_names cell 1x6
 ```
 
 ## Tareas
@@ -77,10 +77,11 @@ horizontal y traslación de unos pocos píxeles) con `imageDataAugmenter`
   resultado. Usa `'FillValue', 0.5` (gris neutro), acorde a la
   normalización `[0, 1]`.
 - `ValidationFrequency` se cuenta en **iteraciones, no en épocas**. Con
-  `MiniBatchSize` 64 hay ~400 iteraciones por época, así que un valor de
-  10 lanza ~40 validaciones por época y triplica el tiempo total de
-  entrenamiento sin que nada falle de forma visible. Para validar una
-  vez por época, pásale `ceil(nTrain / miniBatchSize)`.
+  `MiniBatchSize` 64 hay ~160 iteraciones por época, así que un valor de
+  10 lanza ~16 validaciones por época en vez de 1, y puede multiplicar
+  varias veces el tiempo total de entrenamiento sin que nada falle de
+  forma visible. Para validar una vez por época, pásale
+  `ceil(nTrain / miniBatchSize)`.
 - Haz la augmentation con operaciones vectorizadas sobre todo el lote,
   nunca con un bucle imagen por imagen.
 

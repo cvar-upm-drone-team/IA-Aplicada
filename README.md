@@ -14,6 +14,7 @@ enunciados/              Un enunciado .md por ejercicio (independientes)
 docs/
   dataset.md             Dataset: descarga, formato, uso en Colab
   metrics.md             Definiciones de precision/recall/F1/AUC/AP
+  faq.md                 Problemas previsibles de instalación de MATLAB
 utils/
   evaluar.m              Evaluación común: accuracy, confusión, P/R/F1, AUC, AP
 ```
@@ -21,7 +22,8 @@ utils/
 ## Dataset
 
 CIFAR-10, subset de 6 clases (avión, automóvil, pájaro, gato, ciervo,
-perro), **5000 train + 1000 test por clase**.
+perro), **2000 train + 500 test por clase** (pensado para entrenar en
+minutos aunque no tengas tarjeta gráfica).
 
 El fichero que necesitáis es **`cifar_subset.mat`**, y se descarga de
 la release del repositorio:
@@ -29,10 +31,9 @@ la release del repositorio:
 **→ [Descargar cifar_subset.mat](https://github.com/cvar-upm-drone-team/IA-Aplicada/releases/tag/dataset-release-v1)**
 
 Colocadlo en `data/cifar_subset.mat` dentro del repositorio, que es
-donde lo buscan los enunciados. Si no tenéis tarjeta gráfica, hay
-también una variante más ligera (15000 imágenes en vez de 36000) en la
-misma release. Todos los detalles —formato, uso en Google Colab,
-verificación de la descarga— en [`docs/dataset.md`](docs/dataset.md).
+donde lo buscan los enunciados. Todos los detalles —formato, uso en
+Google Colab, verificación de la descarga— en
+[`docs/dataset.md`](docs/dataset.md).
 
 ## Los ejercicios
 
@@ -77,4 +78,7 @@ redes. Las definiciones de cada métrica están en
 - En MATLAB, cuidado con `ValidationFrequency`: se cuenta en
   iteraciones, no en épocas (aviso detallado en el enunciado del
   ejercicio 4). Es un error que no da ningún síntoma salvo que el
-  entrenamiento tarde el triple.
+  entrenamiento tarde mucho más de lo normal.
+- Si MATLAB se queja de una función que no existe (`fitcknn`,
+  `trainnet`...), probablemente te falte instalar una toolbox, no un
+  error de tu código: mira [`docs/faq.md`](docs/faq.md).

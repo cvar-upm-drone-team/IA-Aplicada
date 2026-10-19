@@ -12,8 +12,8 @@ Colab: [`docs/dataset.md`](../docs/dataset.md).
 
 ```matlab
 load('data/cifar_subset.mat');
-% X_train 30000x32x32x3 uint8, y_train 30000x1 (etiquetas 1..6)
-% X_test   6000x32x32x3 uint8, y_test   6000x1, class_names cell 1x6
+% X_train 12000x32x32x3 uint8, y_train 12000x1 (etiquetas 1..6)
+% X_test   3000x32x32x3 uint8, y_test   3000x1, class_names cell 1x6
 ```
 
 ## Tareas
@@ -48,11 +48,11 @@ a partir de la segunda salida de `trainnet`
 
 **Dos avisos de rendimiento:**
 
-- Un `MiniBatchSize` de 32 genera más de 800 mini-lotes por época, cada
+- Un `MiniBatchSize` de 32 genera unos 320 mini-lotes por época, cada
   uno con su coste fijo de lanzamiento en GPU. Usa 128–256.
 - `ValidationFrequency` se cuenta en **iteraciones, no en épocas**. Con
-  `MiniBatchSize` 256 hay ~100 iteraciones por época, así que un valor
-  de 10 lanza 10 validaciones por época. Para validar una vez por época,
+  `MiniBatchSize` 256 hay ~40 iteraciones por época, así que un valor
+  de 10 lanza ~4 validaciones por época. Para validar una vez por época,
   pásale `ceil(nTrain / miniBatchSize)`.
 
 ### 3. Evaluación
