@@ -22,6 +22,7 @@
     <a href="index.html">Enunciados</a>
     <a href="dataset.html">Dataset</a>
     <a href="metrics.html">Métricas</a>
+    <a href="faq.html">FAQ</a>
   </nav>
 </header>
 <main class="content">
@@ -70,41 +71,22 @@ MATLAB):</p>
 </table>
 <h2 id="tamaño">Tamaño</h2>
 <ul>
-<li><strong>Entrenamiento</strong>: 5000 imágenes/clase → 30000 imágenes
-(el máximo disponible en CIFAR-10 para estas 6 clases)</li>
-<li><strong>Test</strong>: 1000 imágenes/clase → 6000 imágenes (también
-el máximo disponible)</li>
+<li><strong>Entrenamiento</strong>: 2000 imágenes/clase → 12000
+imágenes</li>
+<li><strong>Test</strong>: 500 imágenes/clase → 3000 imágenes</li>
 <li>Imágenes de <strong>32×32 píxeles, color (RGB)</strong></li>
 </ul>
-<h2 id="variante-reducida-para-quien-no-tenga-gpu">Variante reducida
-(para quien no tenga GPU)</h2>
-<p>Existe una segunda versión,
-<strong><code>cifar_subset_15k.mat</code></strong>, con 2000 train + 500
-test por clase (12000 + 3000 = 15000 imágenes, un 42% del tamaño del
-dataset completo). Mismo formato, mismas variables, mismo convenio de
-etiquetas — solo cambia la cantidad de imágenes.</p>
-<p>Está pensada para quien no tenga tarjeta gráfica: entrenar la CNN del
-ejercicio 4 en CPU con el dataset completo puede rondar la media hora;
-con esta variante baja a unos minutos, a cambio de entre 1 y 3 puntos
-menos de accuracy (medido con las soluciones de referencia). El orden de
-dificultad entre métodos se mantiene igual con cualquiera de las
-dos.</p>
-<p><strong>Importante</strong>: los enunciados cargan siempre
-<code>data/cifar_subset.mat</code> por nombre fijo. Para usar la
-variante reducida, descárgala y <strong>renómbrala a
-<code>cifar_subset.mat</code></strong> al colocarla en
-<code>data/</code> — no se puede tener las dos a la vez con sus nombres
-originales sin editar el código.</p>
+<p>Es un subconjunto reducido pensado para que los cuatro ejercicios,
+incluida la CNN, entrenen en minutos aunque no tengas tarjeta
+gráfica.</p>
 <h2 id="cómo-obtener-el-dataset">Cómo obtener el dataset</h2>
 <p>El fichero que necesitas es
-<strong><code>cifar_subset.mat</code></strong> (106 MB).</p>
+<strong><code>cifar_subset.mat</code></strong> (44 MB).</p>
 <p><strong>→ Descárgalo de la release:</strong>
 https://github.com/cvar-upm-drone-team/IA-Aplicada/releases/tag/dataset-release-v1</p>
-<p>No está dentro del árbol de git porque pesa 105,7 MiB, por encima del
-límite de 100 MiB que GitHub impone a los ficheros versionados; de ahí
-que se distribuya como release. La variante reducida
-(<code>cifar_subset_15k.mat</code>) está en la misma release como
-segundo <em>asset</em>.</p>
+<p>No está dentro del árbol de git porque los ficheros binarios de este
+tamaño no se versionan bien en git; de ahí que se distribuya como
+release.</p>
 <p>Una vez descargado, colócalo en
 <strong><code>data/cifar_subset.mat</code></strong> dentro del
 repositorio: es la ruta donde lo buscan los enunciados
@@ -114,10 +96,7 @@ más abajo).</p>
 <p>Verifica la integridad tras descargarlo:</p>
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sha256sum</span> cifar_subset.mat</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 3cb1a3e2969955bd8f30832e96e047d6b4141014bcd0fe12ef8ac80b67369a7c</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sha256sum</span> cifar_subset_15k.mat</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 5a3fd2cd492d19efbe8b208139051e64735fa205f1d66da5e981dad6275c0101</span></span></code></pre></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 5a3fd2cd492d19efbe8b208139051e64735fa205f1d66da5e981dad6275c0101</span></span></code></pre></div>
 <p>En Windows, desde PowerShell:</p>
 <div class="sourceCode" id="cb2"><pre
 class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Get<span class="op">-</span>FileHash cifar_subset<span class="op">.</span><span class="fu">mat</span> <span class="op">-</span>Algorithm SHA256</span></code></pre></div>
@@ -126,18 +105,18 @@ class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb2-
 del fichero y no coincide con ninguna herramienta estándar):</p>
 <div class="sourceCode" id="cb3"><pre
 class="sourceCode matlab"><code class="sourceCode matlab"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="va">d</span> <span class="op">=</span> <span class="va">dir</span>(<span class="ss">&#39;cifar_subset.mat&#39;</span>)<span class="op">;</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="va">d</span>.<span class="va">bytes</span>    <span class="co">% debe ser 110880824</span></span></code></pre></div>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="va">d</span>.<span class="va">bytes</span>    <span class="co">% debe ser 46200824</span></span></code></pre></div>
 <h3 id="verificar-que-ha-salido-bien">Verificar que ha salido bien</h3>
 <div class="sourceCode" id="cb4"><pre
 class="sourceCode matlab"><code class="sourceCode matlab"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="va">load</span>(<span class="ss">&#39;data/cifar_subset.mat&#39;</span>)<span class="op">;</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="va">size</span>(<span class="va">X_train</span>)      <span class="co">% 30000  32  32   3</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="va">size</span>(<span class="va">y_train</span>)      <span class="co">% 30000   1</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="va">size</span>(<span class="va">X_train</span>)      <span class="co">% 12000  32  32   3</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="va">size</span>(<span class="va">y_train</span>)      <span class="co">% 12000   1</span></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="va">unique</span>(<span class="va">y_train</span>)<span class="op">&#39;</span>   <span class="co">% 1 2 3 4 5 6</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="va">histcounts</span>(<span class="va">y_train</span><span class="op">,</span> <span class="fl">1</span><span class="op">:</span><span class="fl">7</span>)   <span class="co">% 5000 cada clase</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="va">histcounts</span>(<span class="va">y_train</span><span class="op">,</span> <span class="fl">1</span><span class="op">:</span><span class="fl">7</span>)   <span class="co">% 2000 cada clase</span></span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="va">class_names</span>        <span class="co">% 6 nombres, en orden de etiqueta</span></span></code></pre></div>
 <h2 id="uso-en-google-colab">Uso en Google Colab</h2>
-<p>El fichero pesa 106 MB y el almacenamiento de Colab se borra al
-cerrar la sesión, así que <strong>conviene no volver a descargarlo cada
+<p>El fichero pesa 44 MB y el almacenamiento de Colab se borra al cerrar
+la sesión, así que <strong>conviene no volver a descargarlo cada
 vez</strong>. La vía recomendada es subirlo una vez a Google Drive y
 montar Drive desde el notebook:</p>
 <ol type="1">
@@ -181,22 +160,22 @@ de cada práctica.</p>
 <tbody>
 <tr class="odd">
 <td><code>X_train</code></td>
-<td><code>uint8</code>, <code>30000×32×32×3</code></td>
+<td><code>uint8</code>, <code>12000×32×32×3</code></td>
 <td>Imágenes de entrenamiento</td>
 </tr>
 <tr class="even">
 <td><code>y_train</code></td>
-<td><code>double</code>, <code>30000×1</code></td>
+<td><code>double</code>, <code>12000×1</code></td>
 <td>Etiquetas de entrenamiento (1–6)</td>
 </tr>
 <tr class="odd">
 <td><code>X_test</code></td>
-<td><code>uint8</code>, <code>6000×32×32×3</code></td>
+<td><code>uint8</code>, <code>3000×32×32×3</code></td>
 <td>Imágenes de test</td>
 </tr>
 <tr class="even">
 <td><code>y_test</code></td>
-<td><code>double</code>, <code>6000×1</code></td>
+<td><code>double</code>, <code>3000×1</code></td>
 <td>Etiquetas de test (1–6)</td>
 </tr>
 <tr class="odd">

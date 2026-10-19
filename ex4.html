@@ -22,6 +22,7 @@
     <a href="index.html">Enunciados</a>
     <a href="dataset.html">Dataset</a>
     <a href="metrics.html">Métricas</a>
+    <a href="faq.html">FAQ</a>
   </nav>
 </header>
 <main class="content">
@@ -39,8 +40,8 @@ Formato completo y uso en Google Colab: <a
 href="dataset.html"><code>docs/dataset.md</code></a>.</p>
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode matlab"><code class="sourceCode matlab"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="va">load</span>(<span class="ss">&#39;data/cifar_subset.mat&#39;</span>)<span class="op">;</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">% X_train 30000x32x32x3 uint8, y_train 30000x1 (etiquetas 1..6)</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">% X_test   6000x32x32x3 uint8, y_test   6000x1, class_names cell 1x6</span></span></code></pre></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">% X_train 12000x32x32x3 uint8, y_train 12000x1 (etiquetas 1..6)</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">% X_test   3000x32x32x3 uint8, y_test   3000x1, class_names cell 1x6</span></span></code></pre></div>
 <h2 id="tareas">Tareas</h2>
 <h3 id="preprocesado">1. Preprocesado</h3>
 <p>Aquí <strong>no</strong> se aplana la imagen: la CNN trabaja sobre la
@@ -102,11 +103,11 @@ artificiales que empeoran el resultado. Usa
 <code>'FillValue', 0.5</code> (gris neutro), acorde a la normalización
 <code>[0, 1]</code>.</li>
 <li><code>ValidationFrequency</code> se cuenta en <strong>iteraciones,
-no en épocas</strong>. Con <code>MiniBatchSize</code> 64 hay ~400
-iteraciones por época, así que un valor de 10 lanza ~40 validaciones por
-época y triplica el tiempo total de entrenamiento sin que nada falle de
-forma visible. Para validar una vez por época, pásale
-<code>ceil(nTrain / miniBatchSize)</code>.</li>
+no en épocas</strong>. Con <code>MiniBatchSize</code> 64 hay ~160
+iteraciones por época, así que un valor de 10 lanza ~16 validaciones por
+época en vez de 1, y puede multiplicar varias veces el tiempo total de
+entrenamiento sin que nada falle de forma visible. Para validar una vez
+por época, pásale <code>ceil(nTrain / miniBatchSize)</code>.</li>
 <li>Haz la augmentation con operaciones vectorizadas sobre todo el lote,
 nunca con un bucle imagen por imagen.</li>
 </ul>

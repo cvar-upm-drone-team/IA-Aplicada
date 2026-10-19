@@ -22,6 +22,7 @@
     <a href="index.html">Enunciados</a>
     <a href="dataset.html">Dataset</a>
     <a href="metrics.html">Métricas</a>
+    <a href="faq.html">FAQ</a>
   </nav>
 </header>
 <main class="content">
@@ -39,8 +40,8 @@ Formato completo y uso en Google Colab: <a
 href="dataset.html"><code>docs/dataset.md</code></a>.</p>
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode matlab"><code class="sourceCode matlab"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="va">load</span>(<span class="ss">&#39;data/cifar_subset.mat&#39;</span>)<span class="op">;</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">% X_train 30000x32x32x3 uint8, y_train 30000x1 (etiquetas 1..6)</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">% X_test   6000x32x32x3 uint8, y_test   6000x1, class_names cell 1x6</span></span></code></pre></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">% X_train 12000x32x32x3 uint8, y_train 12000x1 (etiquetas 1..6)</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">% X_test   3000x32x32x3 uint8, y_test   3000x1, class_names cell 1x6</span></span></code></pre></div>
 <h2 id="tareas">Tareas</h2>
 <h3 id="preprocesado">1. Preprocesado</h3>
 <p>Aplana cada imagen de <code>32×32×3</code> a un vector de 3072
@@ -68,12 +69,12 @@ reservando parte del entrenamiento como validación
 <code>info.ValidationHistory</code>).</p>
 <p><strong>Dos avisos de rendimiento:</strong></p>
 <ul>
-<li>Un <code>MiniBatchSize</code> de 32 genera más de 800 mini-lotes por
+<li>Un <code>MiniBatchSize</code> de 32 genera unos 320 mini-lotes por
 época, cada uno con su coste fijo de lanzamiento en GPU. Usa
 128–256.</li>
 <li><code>ValidationFrequency</code> se cuenta en <strong>iteraciones,
-no en épocas</strong>. Con <code>MiniBatchSize</code> 256 hay ~100
-iteraciones por época, así que un valor de 10 lanza 10 validaciones por
+no en épocas</strong>. Con <code>MiniBatchSize</code> 256 hay ~40
+iteraciones por época, así que un valor de 10 lanza ~4 validaciones por
 época. Para validar una vez por época, pásale
 <code>ceil(nTrain / miniBatchSize)</code>.</li>
 </ul>

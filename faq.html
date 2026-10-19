@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FAQ — IA Aplicada</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="index.html">
+    <span class="brand-mark">IA</span>
+    <span class="brand-text">
+      <span class="brand-title">IA Aplicada</span>
+      <span class="brand-sub">Clasificación de imágenes · MUIA/MUAR</span>
+    </span>
+  </a>
+  <nav>
+    <a href="index.html">Enunciados</a>
+    <a href="dataset.html">Dataset</a>
+    <a href="metrics.html">Métricas</a>
+    <a href="faq.html">FAQ</a>
+  </nav>
+</header>
+<main class="content">
+<h1 id="faq-instalación-y-entorno-de-matlab">FAQ: instalación y entorno
+de MATLAB</h1>
+<h2 id="qué-hace-falta-instalar">Qué hace falta instalar</h2>
+<p>MATLAB se vende por módulos: el programa base trae lo básico y cada
+área (estadística, redes neuronales, imagen…) va en un módulo aparte que
+se llama <em>toolbox</em>. Para estos ejercicios hacen falta dos:</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Toolbox</th>
+<th>Hace falta para</th>
+<th>Ejercicios</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Statistics and Machine Learning</strong></td>
+<td>KNN, Naive Bayes, PCA y el cálculo de las métricas</td>
+<td><strong>los cuatro</strong></td>
+</tr>
+<tr class="even">
+<td><strong>Deep Learning</strong></td>
+<td>entrenar redes neuronales</td>
+<td>3 y 4</td>
+</tr>
+</tbody>
+</table>
+<p>Ojo con la primera fila: aunque los ejercicios 3 y 4 son de redes
+neuronales, <strong>también necesitan la toolbox de
+estadística</strong>, porque el script de evaluación
+(<code>utils/evaluar.m</code>) la usa para calcular las métricas. Es
+fácil asumir que con la de Deep Learning basta para esos dos, y no es
+así.</p>
+<h2 id="cómo-comprobar-si-la-tienes">Cómo comprobar si la tienes</h2>
+<p>Escríbelo en la ventana de comandos de MATLAB:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode matlab"><code class="sourceCode matlab"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="va">exist</span>(<span class="ss">&#39;fitcknn&#39;</span>)     <span class="co">% 2 = la toolbox de estadística está puesta, 0 = no</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="va">exist</span>(<span class="ss">&#39;trainnet&#39;</span>)    <span class="co">% 2 = la de Deep Learning está puesta, 0 = no</span></span></code></pre></div>
+<p>Si quieres la lista completa de lo que tienes instalado, el comando
+es <code>ver</code>.</p>
+<p><strong>Cuidado con una trampa</strong>: existe otro comando,
+<code>license('test', ...)</code>, que parece servir para lo mismo pero
+no. Ese dice si <em>la licencia</em> permite usar la toolbox, no si está
+instalada. Puede decir que sí mientras la toolbox no está puesta, y
+entonces nada funciona. Fíate de <code>exist</code>.</p>
+<h2 id="el-error-que-verás-si-te-falta-una-toolbox">El error que verás
+si te falta una toolbox</h2>
+<pre><code>Undefined function &#39;fitcknn&#39; for input arguments of type &#39;double&#39;.</code></pre>
+<p>Suena a error de programación, pero no lo es: significa “esa función
+no existe en este MATLAB”, o sea, te falta la toolbox. <strong>No hace
+falta reinstalar MATLAB</strong>: se añade desde el propio MATLAB, en el
+menú de arriba, <strong>Home → Add-Ons → Get Add-Ons</strong>, buscando
+la toolbox por su nombre e instalándola.</p>
+<p>La licencia de estudiante normalmente las cubre, pero en el
+instalador hay que marcarlas a mano: <strong>por defecto no vienen todas
+seleccionadas</strong>, y de ahí viene la mayoría de estos casos.</p>
+<h2 id="versión-de-matlab">Versión de MATLAB</h2>
+<p>Este material usa <code>trainnet</code> para entrenar redes, que
+existe <strong>desde R2023b</strong>. Si tienes una versión anterior
+verás:</p>
+<pre><code>Undefined function &#39;trainnet&#39;</code></pre>
+<p>y no es que te falte una toolbox: es que tu MATLAB es demasiado
+antiguo. En esas versiones el comando se llamaba
+<code>trainNetwork</code> y la red se construía de forma algo distinta,
+así que tendrías que adaptar el código del enunciado. Antes de buscar el
+fallo en otra parte, comprueba siempre qué versión tienes, porque este
+caso se confunde con mucha facilidad con una toolbox que falta: el
+mensaje de error es prácticamente el mismo.</p>
+<h2 id="hace-falta-tarjeta-gráfica">¿Hace falta tarjeta gráfica?</h2>
+<p>No. Todo funciona sin GPU; lo único que cambia es el tiempo. El
+dataset de este curso ya está pensado para entrenar en minutos incluso
+sin tarjeta gráfica.</p>
+<p>Para saber si MATLAB está usando la tarjeta, escribe
+<code>gpuDevice</code>: si hay una disponible muestra sus datos, y si
+no, da error.</p>
+<p>Un aviso por experiencia propia: si el entrenamiento te va
+absurdamente lento <em>teniendo</em> tarjeta gráfica, antes de buscar el
+fallo en el código conviene descartar que sea el propio ordenador. Nos
+pasó que la gráfica se quedó “dormida” en su modo de mínimo consumo aun
+estando al 100% de uso, y lo único que lo arregló fue reiniciar el
+equipo.</p>
+
+</main>
+<footer class="footer">
+  <p>MUIA/MUAR — IA Aplicada. Enunciados y dataset en el
+  <a href="https://github.com/cvar-upm-drone-team/IA-Aplicada">repositorio</a>.</p>
+</footer>
+</body>
+</html>
