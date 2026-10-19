@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ejercicio 1 — K-Nearest Neighbors — IA Aplicada</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="index.html">
+    <span class="brand-mark">IA</span>
+    <span class="brand-text">
+      <span class="brand-title">IA Aplicada</span>
+      <span class="brand-sub">Clasificación de imágenes · MUIA/MUAR</span>
+    </span>
+  </a>
+  <nav>
+    <a href="index.html">Enunciados</a>
+    <a href="dataset.html">Dataset</a>
+    <a href="metrics.html">Métricas</a>
+  </nav>
+</header>
+<main class="content">
+<h1 id="ejercicio-1-clasificación-con-k-nearest-neighbors-knn">Ejercicio
+1 — Clasificación con K-Nearest Neighbors (KNN)</h1>
+<p>Clasificar imágenes de 6 categorías con un clasificador
+<strong>KNN</strong>, y medir el efecto de reducir la dimensionalidad
+con PCA.</p>
+<h2 id="dataset">Dataset</h2>
+<p>Descarga <code>cifar_subset.mat</code> de la <a
+href="https://github.com/GPatiA2/MUIA-IA_Aplicada/releases/tag/dataset-release-v1">release
+del repositorio</a> y colócalo en <code>data/cifar_subset.mat</code>.
+Formato completo y uso en Google Colab: <a
+href="dataset.html"><code>docs/dataset.md</code></a>.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode matlab"><code class="sourceCode matlab"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="va">load</span>(<span class="ss">&#39;data/cifar_subset.mat&#39;</span>)<span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">% X_train 30000x32x32x3 uint8, y_train 30000x1 (etiquetas 1..6)</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">% X_test   6000x32x32x3 uint8, y_test   6000x1, class_names cell 1x6</span></span></code></pre></div>
+<h2 id="tareas">Tareas</h2>
+<h3 id="preprocesado">1. Preprocesado</h3>
+<p>Aplana cada imagen de <code>32×32×3</code> a un vector de 3072
+elementos y normaliza a <code>[0, 1]</code>. En color: no conviertas a
+escala de grises.</p>
+<p>Deberías acabar con <code>X_train</code> de <code>30000×3072</code> y
+<code>X_test</code> de <code>6000×3072</code>.</p>
+<h3 id="clasificador-knn-base">2. Clasificador KNN base</h3>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode matlab"><code class="sourceCode matlab"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="va">mdl</span> <span class="op">=</span> <span class="va">fitcknn</span>(<span class="va">X_train</span><span class="op">,</span> <span class="va">y_train</span><span class="op">,</span> <span class="ss">&#39;NumNeighbors&#39;</span><span class="op">,</span> <span class="fl">5</span>)<span class="op">;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>[<span class="va">preds</span><span class="op">,</span> <span class="va">scores</span>] <span class="op">=</span> <span class="va">predict</span>(<span class="va">mdl</span><span class="op">,</span> <span class="va">X_test</span>)<span class="op">;</span></span></code></pre></div>
+<h3 id="evaluación">3. Evaluación</h3>
+<p><code>utils/evaluar.m</code> calcula accuracy, matriz de confusión,
+precision/recall/F1 (por clase y macro-promediadas), AUC y AP
+One-vs-Rest. Definiciones en <a
+href="metrics.html"><code>docs/metrics.md</code></a>.</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode matlab"><code class="sourceCode matlab"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="va">addpath</span>(<span class="ss">&#39;utils&#39;</span>)<span class="op">;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="va">evaluar</span>(<span class="va">y_test</span><span class="op">,</span> <span class="va">preds</span><span class="op">,</span> <span class="va">scores</span><span class="op">,</span> <span class="va">class_names</span>)<span class="op">;</span></span></code></pre></div>
+<h3 id="barrido-de-k">4. Barrido de <code>k</code></h3>
+<p>Repite el entrenamiento y el cálculo del accuracy de test para
+<code>k = 1, 3, 5, 7, 9, 15, 25</code>. Representa el accuracy frente a
+<code>k</code> con <code>plot</code> e identifica el mejor valor.</p>
+<h3 id="pca-antes-de-knn">5. PCA antes de KNN</h3>
+<p>Proyecta los datos a 50 componentes principales y repite el
+entrenamiento y la evaluación con el mejor <code>k</code> del apartado
+anterior.</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode matlab"><code class="sourceCode matlab"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>[<span class="va">coeff</span><span class="op">,</span> <span class="va">scoreTrain</span><span class="op">,</span> <span class="op">~,</span> <span class="op">~,</span> <span class="op">~,</span> <span class="va">mu</span>] <span class="op">=</span> <span class="va">pca</span>(<span class="va">X_train</span><span class="op">,</span> <span class="ss">&#39;NumComponents&#39;</span><span class="op">,</span> <span class="fl">50</span><span class="op">,</span> <span class="ss">&#39;Algorithm&#39;</span><span class="op">,</span> <span class="ss">&#39;eig&#39;</span>)<span class="op">;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="va">scoreTest</span> <span class="op">=</span> (<span class="va">X_test</span> <span class="op">-</span> <span class="va">mu</span>) <span class="op">*</span> <span class="va">coeff</span><span class="op">;</span></span></code></pre></div>
+<p>Recoge en una tabla el accuracy con PCA y sin PCA.</p>
+
+</main>
+<footer class="footer">
+  <p>MUIA/MUAR — IA Aplicada. Enunciados y dataset en el
+  <a href="https://github.com/cvar-upm-drone-team/IA-Aplicada">repositorio</a>.</p>
+</footer>
+</body>
+</html>

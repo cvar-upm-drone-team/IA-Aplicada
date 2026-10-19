@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ejercicio 3 — Perceptrón multicapa — IA Aplicada</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="index.html">
+    <span class="brand-mark">IA</span>
+    <span class="brand-text">
+      <span class="brand-title">IA Aplicada</span>
+      <span class="brand-sub">Clasificación de imágenes · MUIA/MUAR</span>
+    </span>
+  </a>
+  <nav>
+    <a href="index.html">Enunciados</a>
+    <a href="dataset.html">Dataset</a>
+    <a href="metrics.html">Métricas</a>
+  </nav>
+</header>
+<main class="content">
+<h1
+id="ejercicio-3-clasificación-con-un-perceptrón-multicapa-mlp">Ejercicio
+3 — Clasificación con un Perceptrón Multicapa (MLP)</h1>
+<p>Clasificar imágenes de 6 categorías con un <strong>MLP</strong> (red
+totalmente conectada), medir el efecto de variar la arquitectura y el de
+aplicar PCA.</p>
+<h2 id="dataset">Dataset</h2>
+<p>Descarga <code>cifar_subset.mat</code> de la <a
+href="https://github.com/GPatiA2/MUIA-IA_Aplicada/releases/tag/dataset-release-v1">release
+del repositorio</a> y colócalo en <code>data/cifar_subset.mat</code>.
+Formato completo y uso en Google Colab: <a
+href="dataset.html"><code>docs/dataset.md</code></a>.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode matlab"><code class="sourceCode matlab"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="va">load</span>(<span class="ss">&#39;data/cifar_subset.mat&#39;</span>)<span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">% X_train 30000x32x32x3 uint8, y_train 30000x1 (etiquetas 1..6)</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">% X_test   6000x32x32x3 uint8, y_test   6000x1, class_names cell 1x6</span></span></code></pre></div>
+<h2 id="tareas">Tareas</h2>
+<h3 id="preprocesado">1. Preprocesado</h3>
+<p>Aplana cada imagen de <code>32×32×3</code> a un vector de 3072
+elementos y normaliza a <code>[0, 1]</code>. En color: no conviertas a
+escala de grises. Convierte las etiquetas a <code>categorical</code>
+para Deep Learning Toolbox.</p>
+<h3 id="arquitectura-y-entrenamiento">2. Arquitectura y
+entrenamiento</h3>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode matlab"><code class="sourceCode matlab"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="va">layers</span> <span class="op">=</span> [</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="va">featureInputLayer</span>(<span class="fl">3072</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="va">fullyConnectedLayer</span>(<span class="fl">256</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="va">reluLayer</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="va">fullyConnectedLayer</span>(<span class="fl">128</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="va">reluLayer</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="va">fullyConnectedLayer</span>(<span class="fl">6</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="va">softmaxLayer</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>]<span class="op">;</span></span></code></pre></div>
+<p>Entrena con <code>trainnet</code> y optimizador Adam, 50–80 épocas,
+reservando parte del entrenamiento como validación
+(<code>trainingOptions(..., 'ValidationData', ...)</code>).</p>
+<p>Representa la curva de pérdida de entrenamiento y validación por
+época, a partir de la segunda salida de <code>trainnet</code>
+(<code>info.TrainingHistory</code> e
+<code>info.ValidationHistory</code>).</p>
+<p><strong>Dos avisos de rendimiento:</strong></p>
+<ul>
+<li>Un <code>MiniBatchSize</code> de 32 genera más de 800 mini-lotes por
+época, cada uno con su coste fijo de lanzamiento en GPU. Usa
+128–256.</li>
+<li><code>ValidationFrequency</code> se cuenta en <strong>iteraciones,
+no en épocas</strong>. Con <code>MiniBatchSize</code> 256 hay ~100
+iteraciones por época, así que un valor de 10 lanza 10 validaciones por
+época. Para validar una vez por época, pásale
+<code>ceil(nTrain / miniBatchSize)</code>.</li>
+</ul>
+<h3 id="evaluación">3. Evaluación</h3>
+<p><code>utils/evaluar.m</code> calcula accuracy, matriz de confusión,
+precision/recall/F1 (por clase y macro-promediadas), AUC y AP
+One-vs-Rest. Definiciones en <a
+href="metrics.html"><code>docs/metrics.md</code></a>.</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode matlab"><code class="sourceCode matlab"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="va">addpath</span>(<span class="ss">&#39;utils&#39;</span>)<span class="op">;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="va">scores</span> <span class="op">=</span> <span class="va">minibatchpredict</span>(<span class="va">net</span><span class="op">,</span> <span class="va">X_test</span>)<span class="op">;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="va">preds</span>  <span class="op">=</span> <span class="va">scores2label</span>(<span class="va">scores</span><span class="op">,</span> <span class="va">categories</span>(<span class="va">Y_train</span>))<span class="op">;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="va">evaluar</span>(<span class="va">Y_test</span><span class="op">,</span> <span class="va">preds</span><span class="op">,</span> <span class="va">scores</span><span class="op">,</span> <span class="va">class_names</span>)<span class="op">;</span></span></code></pre></div>
+<h3 id="variaciones-de-la-arquitectura">4. Variaciones de la
+arquitectura</h3>
+<p>Entrena al menos dos variantes más, cambiando el número de neuronas
+de las capas ocultas, añadiendo o quitando una capa, o añadiendo un
+<code>dropoutLayer</code>. Recoge en una tabla el accuracy de test de
+cada variante junto al de la arquitectura base.</p>
+<h3 id="pca-antes-del-mlp">5. PCA antes del MLP</h3>
+<p>Proyecta los datos a 50 componentes principales y repite el
+entrenamiento con la misma arquitectura, ajustando
+<code>featureInputLayer</code> a 50.</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode matlab"><code class="sourceCode matlab"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>[<span class="va">coeff</span><span class="op">,</span> <span class="va">scoreTrain</span><span class="op">,</span> <span class="op">~,</span> <span class="op">~,</span> <span class="op">~,</span> <span class="va">mu</span>] <span class="op">=</span> <span class="va">pca</span>(<span class="va">X_train</span><span class="op">,</span> <span class="ss">&#39;NumComponents&#39;</span><span class="op">,</span> <span class="fl">50</span><span class="op">,</span> <span class="ss">&#39;Algorithm&#39;</span><span class="op">,</span> <span class="ss">&#39;eig&#39;</span>)<span class="op">;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="va">scoreTest</span> <span class="op">=</span> (<span class="va">X_test</span> <span class="op">-</span> <span class="va">mu</span>) <span class="op">*</span> <span class="va">coeff</span><span class="op">;</span></span></code></pre></div>
+<p>Recoge en la tabla el accuracy y el tiempo de entrenamiento con PCA y
+sin PCA.</p>
+
+</main>
+<footer class="footer">
+  <p>MUIA/MUAR — IA Aplicada. Enunciados y dataset en el
+  <a href="https://github.com/cvar-upm-drone-team/IA-Aplicada">repositorio</a>.</p>
+</footer>
+</body>
+</html>

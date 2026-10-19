@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ejercicio 4 — Red convolucional — IA Aplicada</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="index.html">
+    <span class="brand-mark">IA</span>
+    <span class="brand-text">
+      <span class="brand-title">IA Aplicada</span>
+      <span class="brand-sub">Clasificación de imágenes · MUIA/MUAR</span>
+    </span>
+  </a>
+  <nav>
+    <a href="index.html">Enunciados</a>
+    <a href="dataset.html">Dataset</a>
+    <a href="metrics.html">Métricas</a>
+  </nav>
+</header>
+<main class="content">
+<h1
+id="ejercicio-4-clasificación-con-una-red-convolucional-cnn">Ejercicio 4
+— Clasificación con una Red Convolucional (CNN)</h1>
+<p>Clasificar imágenes de 6 categorías con una <strong>CNN</strong>, que
+trabaja directamente sobre la estructura 2D de la imagen en vez de
+aplanarla.</p>
+<h2 id="dataset">Dataset</h2>
+<p>Descarga <code>cifar_subset.mat</code> de la <a
+href="https://github.com/GPatiA2/MUIA-IA_Aplicada/releases/tag/dataset-release-v1">release
+del repositorio</a> y colócalo en <code>data/cifar_subset.mat</code>.
+Formato completo y uso en Google Colab: <a
+href="dataset.html"><code>docs/dataset.md</code></a>.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode matlab"><code class="sourceCode matlab"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="va">load</span>(<span class="ss">&#39;data/cifar_subset.mat&#39;</span>)<span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">% X_train 30000x32x32x3 uint8, y_train 30000x1 (etiquetas 1..6)</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">% X_test   6000x32x32x3 uint8, y_test   6000x1, class_names cell 1x6</span></span></code></pre></div>
+<h2 id="tareas">Tareas</h2>
+<h3 id="preprocesado">1. Preprocesado</h3>
+<p>Aquí <strong>no</strong> se aplana la imagen: la CNN trabaja sobre la
+estructura 2D con sus 3 canales de color.</p>
+<ul>
+<li>Convierte a <code>single</code> y normaliza a
+<code>[0, 1]</code>.</li>
+<li>Reordena al formato <code>32×32×3×N</code> que espera
+<code>imageInputLayer</code>: en el <code>.mat</code> vienen como
+<code>N×32×32×3</code>, así que <code>permute(X, [2 3 4 1])</code>
+(vectorizado, no un bucle por imagen).</li>
+<li>Convierte las etiquetas a <code>categorical</code>.</li>
+</ul>
+<h3 id="arquitectura-y-entrenamiento">2. Arquitectura y
+entrenamiento</h3>
+<p>Tres bloques convolucionales que doblan los canales mientras el
+<em>pooling</em> parte el mapa espacial por la mitad
+(<code>32×32 → 16×16 → 8×8 → 4×4</code>), y un clasificador denso al
+final:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode matlab"><code class="sourceCode matlab"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="va">layers</span> <span class="op">=</span> [</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="va">imageInputLayer</span>([<span class="fl">32</span> <span class="fl">32</span> <span class="fl">3</span>]<span class="op">,</span> <span class="ss">&#39;Normalization&#39;</span><span class="op">,</span> <span class="ss">&#39;none&#39;</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="va">convolution2dLayer</span>(<span class="fl">3</span><span class="op">,</span> <span class="fl">32</span><span class="op">,</span> <span class="ss">&#39;Padding&#39;</span><span class="op">,</span> <span class="ss">&#39;same&#39;</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="va">batchNormalizationLayer</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="va">reluLayer</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="va">maxPooling2dLayer</span>(<span class="fl">2</span><span class="op">,</span> <span class="ss">&#39;Stride&#39;</span><span class="op">,</span> <span class="fl">2</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="va">convolution2dLayer</span>(<span class="fl">3</span><span class="op">,</span> <span class="fl">64</span><span class="op">,</span> <span class="ss">&#39;Padding&#39;</span><span class="op">,</span> <span class="ss">&#39;same&#39;</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="va">batchNormalizationLayer</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="va">reluLayer</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="va">maxPooling2dLayer</span>(<span class="fl">2</span><span class="op">,</span> <span class="ss">&#39;Stride&#39;</span><span class="op">,</span> <span class="fl">2</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="va">convolution2dLayer</span>(<span class="fl">3</span><span class="op">,</span> <span class="fl">128</span><span class="op">,</span> <span class="ss">&#39;Padding&#39;</span><span class="op">,</span> <span class="ss">&#39;same&#39;</span>)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="va">batchNormalizationLayer</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="va">reluLayer</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="va">maxPooling2dLayer</span>(<span class="fl">2</span><span class="op">,</span> <span class="ss">&#39;Stride&#39;</span><span class="op">,</span> <span class="fl">2</span>)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="va">fullyConnectedLayer</span>(<span class="fl">128</span>)</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="va">reluLayer</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    <span class="va">dropoutLayer</span>(<span class="fl">0.3</span>)</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="va">fullyConnectedLayer</span>(<span class="fl">6</span>)</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    <span class="va">softmaxLayer</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>]<span class="op">;</span></span></code></pre></div>
+<p>Entrena con <code>trainnet</code> y Adam, con estos valores de
+partida: <code>InitialLearnRate</code> 5e-4, <code>MiniBatchSize</code>
+64, 150 épocas, <code>'LearnRateSchedule', 'piecewise'</code>, un 15%
+del train como validación y
+<code>'OutputNetwork', 'best-validation'</code>.</p>
+<p>Aplica <em>data augmentation</em> sobre el conjunto de entrenamiento
+(flip horizontal y traslación de unos pocos píxeles) con
+<code>imageDataAugmenter</code> +
+<code>augmentedImageDatastore</code>.</p>
+<p><strong>Tres avisos de rendimiento:</strong></p>
+<ul>
+<li><code>FillValue</code> de <code>imageDataAugmenter</code> vale 0
+(negro) por defecto, así que la traslación mete bordes negros
+artificiales que empeoran el resultado. Usa
+<code>'FillValue', 0.5</code> (gris neutro), acorde a la normalización
+<code>[0, 1]</code>.</li>
+<li><code>ValidationFrequency</code> se cuenta en <strong>iteraciones,
+no en épocas</strong>. Con <code>MiniBatchSize</code> 64 hay ~400
+iteraciones por época, así que un valor de 10 lanza ~40 validaciones por
+época y triplica el tiempo total de entrenamiento sin que nada falle de
+forma visible. Para validar una vez por época, pásale
+<code>ceil(nTrain / miniBatchSize)</code>.</li>
+<li>Haz la augmentation con operaciones vectorizadas sobre todo el lote,
+nunca con un bucle imagen por imagen.</li>
+</ul>
+<h3 id="evaluación">3. Evaluación</h3>
+<p><code>utils/evaluar.m</code> calcula accuracy, matriz de confusión,
+precision/recall/F1 (por clase y macro-promediadas), AUC y AP
+One-vs-Rest. Definiciones en <a
+href="metrics.html"><code>docs/metrics.md</code></a>.</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode matlab"><code class="sourceCode matlab"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="va">addpath</span>(<span class="ss">&#39;utils&#39;</span>)<span class="op">;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="va">scores</span> <span class="op">=</span> <span class="va">minibatchpredict</span>(<span class="va">net</span><span class="op">,</span> <span class="va">X_test</span>)<span class="op">;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="va">preds</span>  <span class="op">=</span> <span class="va">scores2label</span>(<span class="va">scores</span><span class="op">,</span> <span class="va">categories</span>(<span class="va">Y_train</span>))<span class="op">;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="va">evaluar</span>(<span class="va">Y_test</span><span class="op">,</span> <span class="va">preds</span><span class="op">,</span> <span class="va">scores</span><span class="op">,</span> <span class="va">class_names</span>)<span class="op">;</span></span></code></pre></div>
+
+</main>
+<footer class="footer">
+  <p>MUIA/MUAR — IA Aplicada. Enunciados y dataset en el
+  <a href="https://github.com/cvar-upm-drone-team/IA-Aplicada">repositorio</a>.</p>
+</footer>
+</body>
+</html>

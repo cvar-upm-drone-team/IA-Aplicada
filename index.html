@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Enunciados — IA Aplicada</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="index.html">
+    <span class="brand-mark">IA</span>
+    <span class="brand-text">
+      <span class="brand-title">IA Aplicada</span>
+      <span class="brand-sub">Clasificación de imágenes · MUIA/MUAR</span>
+    </span>
+  </a>
+  <nav>
+    <a href="index.html">Enunciados</a>
+    <a href="dataset.html">Dataset</a>
+    <a href="metrics.html">Métricas</a>
+  </nav>
+</header>
+<main class="content">
+
+<section class="hero">
+  <span class="eyebrow">IA Aplicada · MUIA/MUAR</span>
+  <h1>Clasificación de imágenes con KNN, Bayes, MLP y CNN</h1>
+  <p>Cuatro ejercicios independientes que enfrentan el mismo dataset con
+  un método distinto cada vez, de la comparación directa de píxeles a
+  una red convolucional.</p>
+  <div class="hero-actions">
+    <a class="btn-primary" href="https://github.com/cvar-upm-drone-team/IA-Aplicada/releases/tag/dataset-release-v1">Descargar el dataset &rarr;</a>
+    <a class="btn-text" href="#ejercicios">Ver los enunciados &rarr;</a>
+  </div>
+</section>
+
+<section class="grid" id="ejercicios">
+
+      <a class="card" href="ex1.html">
+        <span class="card-tag">Ejercicio 1</span>
+        <span class="card-title">K-Nearest Neighbors</span>
+        <span class="card-desc">Clasificar por parecido directo entre vectores de píxeles</span>
+      </a>
+
+      <a class="card" href="ex2.html">
+        <span class="card-tag">Ejercicio 2</span>
+        <span class="card-title">Naive Bayes Gaussiano</span>
+        <span class="card-desc">Qué pasa cuando su suposición de independencia es falsa</span>
+      </a>
+
+      <a class="card" href="ex3.html">
+        <span class="card-tag">Ejercicio 3</span>
+        <span class="card-title">Perceptrón multicapa</span>
+        <span class="card-desc">Aprender una frontera no lineal sobre la imagen aplanada</span>
+      </a>
+
+      <a class="card" href="ex4.html">
+        <span class="card-tag">Ejercicio 4</span>
+        <span class="card-title">Red convolucional</span>
+        <span class="card-desc">Explotar la estructura espacial 2D en vez de aplanar la imagen</span>
+      </a>
+</section>
+
+<section class="info">
+  <h2>Antes de empezar</h2>
+  <ul>
+    <li>Descarga <code>cifar_subset.mat</code> con el botón de arriba y
+    colócalo en <code>data/cifar_subset.mat</code> dentro del
+    repositorio. Formato del fichero y uso en Google Colab en
+    <a href="dataset.html">Dataset</a>.</li>
+    <li>Usa las imágenes en color: pasar a escala de grises baja el
+    accuracy en los cuatro métodos sin ahorrar tiempo de entrenamiento
+    salvo en KNN y Bayes, que ya tardan segundos.</li>
+    <li>Las definiciones de las métricas que pide cada ejercicio
+    (precision, recall, F1, AUC, AP) están en
+    <a href="metrics.html">Métricas</a>.</li>
+  </ul>
+</section>
+
+</main>
+<footer class="footer">
+  <p>MUIA/MUAR — IA Aplicada. Enunciados y dataset en el
+  <a href="https://github.com/cvar-upm-drone-team/IA-Aplicada">repositorio</a>.</p>
+</footer>
+</body>
+</html>

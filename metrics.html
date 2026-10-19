@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Métricas — IA Aplicada</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="index.html">
+    <span class="brand-mark">IA</span>
+    <span class="brand-text">
+      <span class="brand-title">IA Aplicada</span>
+      <span class="brand-sub">Clasificación de imágenes · MUIA/MUAR</span>
+    </span>
+  </a>
+  <nav>
+    <a href="index.html">Enunciados</a>
+    <a href="dataset.html">Dataset</a>
+    <a href="metrics.html">Métricas</a>
+  </nav>
+</header>
+<main class="content">
+<h1 id="métricas-de-evaluación">Métricas de evaluación</h1>
+<p>La <strong>accuracy</strong> (proporción de aciertos global) es fácil
+de calcular pero puede <strong>esconder problemas graves</strong> cuando
+el clasificador se comporta muy distinto en unas clases que en otras.
+Por eso, además de accuracy y la matriz de confusión, en cada ejercicio
+se pide calcular estas métricas adicionales sobre el conjunto de
+test.</p>
+<h2 id="precision-recall-y-f1-por-clase">Precision, Recall y F1 (por
+clase)</h2>
+<p>Para una clase <code>c</code>, a partir de la matriz de
+confusión:</p>
+<ul>
+<li><strong>Precision</strong> = TP / (TP + FP) — fracción de acierto
+entre las veces que el modelo predijo la clase <code>c</code>.</li>
+<li><strong>Recall</strong> = TP / (TP + FN) — fracción de las imágenes
+que realmente son de la clase <code>c</code> que el modelo llegó a
+detectar.</li>
+<li><strong>F1</strong> = media armónica de precision y recall:
+<code>F1 = 2 · precision · recall / (precision + recall)</code></li>
+</ul>
+<p>donde TP (verdaderos positivos), FP (falsos positivos) y FN (falsos
+negativos) se calculan para esa clase tratándola como “positiva” frente
+a “el resto”.</p>
+<h3 id="macro-average">Macro-average</h3>
+<p>Para tener un único número que resuma las 6 clases, se calcula la
+<strong>media simple</strong> (no ponderada) de precision/recall/F1 de
+las 6 clases. A diferencia de la accuracy global, el macro-average
+<strong>no se deja dominar por las clases en las que el modelo va
+mejor</strong>: si el modelo ignora completamente una clase, eso
+penaliza igual que si ignorara cualquier otra, independientemente de
+cuántos ejemplos tenga esa clase en el test (aquí las 6 clases tienen el
+mismo número de ejemplos, 150, así que no cambia el resultado respecto a
+una media ponderada — pero sí sería distinto en un dataset
+desbalanceado).</p>
+<h3 id="por-qué-importa">Por qué importa</h3>
+<p>Es perfectamente posible que un modelo tenga una accuracy “decente”
+y, a la vez, <strong>ignore casi por completo una clase
+concreta</strong>: puede tener precision alta pero recall muy bajo en
+esa clase (casi nunca la predice, pero cuando lo hace acierta), o al
+revés. La accuracy global no deja ver esto — hace falta mirar
+precision/recall por clase.</p>
+<h2 id="curva-roc-y-auc-one-vs-rest">Curva ROC y AUC (One-vs-Rest)</h2>
+<p>Para un problema multiclase, la curva ROC y el área bajo ella (AUC)
+se calculan <strong>por clase</strong>, tratando esa clase como
+“positiva” y el resto como “negativa” (enfoque
+<strong>One-vs-Rest</strong>, OvR), usando las probabilidades que da el
+modelo para esa clase (no solo la predicción final). El AUC mide qué tan
+bien el modelo <strong>ordena</strong> los ejemplos de esa clase por
+encima de los del resto, independientemente del umbral de decisión.
+Luego se promedia (macro) el AUC de las 6 clases.</p>
+<ul>
+<li>AUC = 0.5 → el modelo no discrimina mejor que el azar para esa
+clase.</li>
+<li>AUC = 1.0 → separación perfecta.</li>
+</ul>
+<h2 id="map-average-precision-one-vs-rest">“mAP” (Average Precision,
+One-vs-Rest)</h2>
+<p><strong>Importante</strong>: mAP (<em>mean Average Precision</em>) es
+una métrica propia de tareas de <strong>detección de objetos o
+recuperación de información</strong>, donde hay que ordenar/rankear
+muchos candidatos por imagen o por consulta. En un problema de
+<strong>clasificación de una sola etiqueta por imagen</strong> como
+este, mAP en su sentido estricto no aplica directamente.</p>
+<p>Lo que sí se puede calcular, y que tiene un “sabor” parecido, es la
+<strong>Average Precision (AP) por clase</strong> a partir de la curva
+precision-recall de esa clase frente al resto (de nuevo, enfoque OvR,
+usando las probabilidades del modelo), promediada entre las 6 clases. A
+esto nos referiremos como <strong>“AP macro” o “mAP-like”</strong> en
+los ejercicios — es una buena práctica para familiarizarse con el
+concepto, pero hay que tener claro que no es el mAP que se usaría, por
+ejemplo, para evaluar un detector de objetos.</p>
+<p><strong>Nota técnica (MATLAB vs. Python)</strong>: en Python,
+<code>average_precision_score</code> calcula el AP con la fórmula de
+interpolación por escalones estándar en detección/recuperación. En
+MATLAB, <code>perfcurve</code> con <code>XCrit='tpr'</code> y
+<code>YCrit='ppv'</code> da el área bajo la curva precision-recall por
+la <strong>regla trapezoidal</strong>, que es un cálculo distinto. Ambos
+son razonables, pero <strong>no dan exactamente el mismo número</strong>
+— la diferencia es pequeña cuando las probabilidades del modelo están
+bien calibradas y la curva precision-recall es suave (p. ej. en la CNN),
+pero puede ser bastante mayor cuando el modelo da probabilidades peor
+calibradas y la curva es más irregular (p. ej. en Naive Bayes). No es un
+error: es una diferencia real de metodología entre ambas
+implementaciones. El AUC (ROC) y las métricas de precision/recall/F1, en
+cambio, sí coinciden entre ambos lenguajes porque se calculan de la
+misma forma.</p>
+<h2 id="qué-se-pide-en-cada-ejercicio">Qué se pide en cada
+ejercicio</h2>
+<p>Para el clasificador que te toque (KNN / Bayesiano / MLP / CNN):</p>
+<ol type="1">
+<li>Calcula <strong>precision, recall y F1 por clase</strong>, y su
+macro-average.</li>
+<li>Calcula el <strong>AUC (One-vs-Rest, macro)</strong> a partir de las
+probabilidades que da tu modelo para cada clase.</li>
+<li>Calcula el <strong>“AP macro” (One-vs-Rest)</strong> de la misma
+forma.</li>
+<li>Identifica si hay alguna clase con <strong>precision y recall muy
+distintos</strong> entre sí (por ejemplo, precision alta pero recall
+bajo). Explica qué significa eso sobre el comportamiento del modelo en
+esa clase, y por qué la accuracy global no lo habría dejado ver.</li>
+</ol>
+
+</main>
+<footer class="footer">
+  <p>MUIA/MUAR — IA Aplicada. Enunciados y dataset en el
+  <a href="https://github.com/cvar-upm-drone-team/IA-Aplicada">repositorio</a>.</p>
+</footer>
+</body>
+</html>

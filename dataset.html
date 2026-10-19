@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dataset — IA Aplicada</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="index.html">
+    <span class="brand-mark">IA</span>
+    <span class="brand-text">
+      <span class="brand-title">IA Aplicada</span>
+      <span class="brand-sub">Clasificación de imágenes · MUIA/MUAR</span>
+    </span>
+  </a>
+  <nav>
+    <a href="index.html">Enunciados</a>
+    <a href="dataset.html">Dataset</a>
+    <a href="metrics.html">Métricas</a>
+  </nav>
+</header>
+<main class="content">
+<h1 id="dataset-cifar-10-subconjunto-reducido">Dataset: CIFAR-10
+(subconjunto reducido)</h1>
+<p>Este dataset es un subconjunto de <a
+href="https://www.cs.toronto.edu/~kriz/cifar.html">CIFAR-10</a>
+preparado para los ejercicios de clasificación de imágenes de IA
+Aplicada (MUIA/MUAR).</p>
+<h2 id="clases">Clases</h2>
+<p>6 clases, codificadas como enteros <strong>1 a 6</strong> (convención
+MATLAB):</p>
+<table>
+<thead>
+<tr class="header">
+<th>Etiqueta</th>
+<th>Clase</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>avión (<code>airplane</code>)</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>automóvil (<code>automobile</code>)</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>pájaro (<code>bird</code>)</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>gato (<code>cat</code>)</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>ciervo (<code>deer</code>)</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>perro (<code>dog</code>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="tamaño">Tamaño</h2>
+<ul>
+<li><strong>Entrenamiento</strong>: 5000 imágenes/clase → 30000 imágenes
+(el máximo disponible en CIFAR-10 para estas 6 clases)</li>
+<li><strong>Test</strong>: 1000 imágenes/clase → 6000 imágenes (también
+el máximo disponible)</li>
+<li>Imágenes de <strong>32×32 píxeles, color (RGB)</strong></li>
+</ul>
+<h2 id="variante-reducida-para-quien-no-tenga-gpu">Variante reducida
+(para quien no tenga GPU)</h2>
+<p>Existe una segunda versión,
+<strong><code>cifar_subset_15k.mat</code></strong>, con 2000 train + 500
+test por clase (12000 + 3000 = 15000 imágenes, un 42% del tamaño del
+dataset completo). Mismo formato, mismas variables, mismo convenio de
+etiquetas — solo cambia la cantidad de imágenes.</p>
+<p>Está pensada para quien no tenga tarjeta gráfica: entrenar la CNN del
+ejercicio 4 en CPU con el dataset completo puede rondar la media hora;
+con esta variante baja a unos minutos, a cambio de entre 1 y 3 puntos
+menos de accuracy (medido con las soluciones de referencia). El orden de
+dificultad entre métodos se mantiene igual con cualquiera de las
+dos.</p>
+<p><strong>Importante</strong>: los enunciados cargan siempre
+<code>data/cifar_subset.mat</code> por nombre fijo. Para usar la
+variante reducida, descárgala y <strong>renómbrala a
+<code>cifar_subset.mat</code></strong> al colocarla en
+<code>data/</code> — no se puede tener las dos a la vez con sus nombres
+originales sin editar el código.</p>
+<h2 id="cómo-obtener-el-dataset">Cómo obtener el dataset</h2>
+<p>El fichero que necesitas es
+<strong><code>cifar_subset.mat</code></strong> (106 MB).</p>
+<p><strong>→ Descárgalo de la release:</strong>
+https://github.com/cvar-upm-drone-team/IA-Aplicada/releases/tag/dataset-release-v1</p>
+<p>No está dentro del árbol de git porque pesa 105,7 MiB, por encima del
+límite de 100 MiB que GitHub impone a los ficheros versionados; de ahí
+que se distribuya como release. La variante reducida
+(<code>cifar_subset_15k.mat</code>) está en la misma release como
+segundo <em>asset</em>.</p>
+<p>Una vez descargado, colócalo en
+<strong><code>data/cifar_subset.mat</code></strong> dentro del
+repositorio: es la ruta donde lo buscan los enunciados
+(<code>load('data/cifar_subset.mat')</code>). Si vas a trabajar en
+Google Colab, súbelo a tu Google Drive y móntalo desde el notebook (ver
+más abajo).</p>
+<p>Verifica la integridad tras descargarlo:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sha256sum</span> cifar_subset.mat</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 3cb1a3e2969955bd8f30832e96e047d6b4141014bcd0fe12ef8ac80b67369a7c</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sha256sum</span> cifar_subset_15k.mat</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 5a3fd2cd492d19efbe8b208139051e64735fa205f1d66da5e981dad6275c0101</span></span></code></pre></div>
+<p>En Windows, desde PowerShell:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Get<span class="op">-</span>FileHash cifar_subset<span class="op">.</span><span class="fu">mat</span> <span class="op">-</span>Algorithm SHA256</span></code></pre></div>
+<p>Desde MATLAB, comprobando el tamaño (no uses
+<code>mlreportgen.utils.hash</code>: no devuelve el hash del contenido
+del fichero y no coincide con ninguna herramienta estándar):</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode matlab"><code class="sourceCode matlab"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="va">d</span> <span class="op">=</span> <span class="va">dir</span>(<span class="ss">&#39;cifar_subset.mat&#39;</span>)<span class="op">;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="va">d</span>.<span class="va">bytes</span>    <span class="co">% debe ser 110880824</span></span></code></pre></div>
+<h3 id="verificar-que-ha-salido-bien">Verificar que ha salido bien</h3>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode matlab"><code class="sourceCode matlab"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="va">load</span>(<span class="ss">&#39;data/cifar_subset.mat&#39;</span>)<span class="op">;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="va">size</span>(<span class="va">X_train</span>)      <span class="co">% 30000  32  32   3</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="va">size</span>(<span class="va">y_train</span>)      <span class="co">% 30000   1</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="va">unique</span>(<span class="va">y_train</span>)<span class="op">&#39;</span>   <span class="co">% 1 2 3 4 5 6</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="va">histcounts</span>(<span class="va">y_train</span><span class="op">,</span> <span class="fl">1</span><span class="op">:</span><span class="fl">7</span>)   <span class="co">% 5000 cada clase</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="va">class_names</span>        <span class="co">% 6 nombres, en orden de etiqueta</span></span></code></pre></div>
+<h2 id="uso-en-google-colab">Uso en Google Colab</h2>
+<p>El fichero pesa 106 MB y el almacenamiento de Colab se borra al
+cerrar la sesión, así que <strong>conviene no volver a descargarlo cada
+vez</strong>. La vía recomendada es subirlo una vez a Google Drive y
+montar Drive desde el notebook:</p>
+<ol type="1">
+<li><strong>Una sola vez</strong>: descarga
+<code>cifar_subset.mat</code> de la release (enlace arriba) y súbelo a
+tu Google Drive, por ejemplo a
+<code>MiUnidad/IA_Aplicada/cifar_subset.mat</code>.</li>
+<li><strong>En cada notebook</strong>, monta Drive al principio:</li>
+</ol>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> google.colab <span class="im">import</span> drive</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>drive.mount(<span class="st">&#39;/content/drive&#39;</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>MAT_PATH <span class="op">=</span> <span class="st">&#39;/content/drive/MyDrive/IA_Aplicada/cifar_subset.mat&#39;</span></span></code></pre></div>
+<ol start="3" type="1">
+<li>Carga el <code>.mat</code> desde esa ruta:</li>
+</ol>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.io <span class="im">import</span> loadmat</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> loadmat(MAT_PATH)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>X_train, y_train <span class="op">=</span> d[<span class="st">&#39;X_train&#39;</span>], d[<span class="st">&#39;y_train&#39;</span>].ravel()   <span class="co"># etiquetas 1..6</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>X_test,  y_test  <span class="op">=</span> d[<span class="st">&#39;X_test&#39;</span>],  d[<span class="st">&#39;y_test&#39;</span>].ravel()</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>class_names <span class="op">=</span> [c[<span class="dv">0</span>] <span class="cf">for</span> c <span class="kw">in</span> d[<span class="st">&#39;class_names&#39;</span>][<span class="dv">0</span>]]</span></code></pre></div>
+<p>Así la descarga del dataset ocurre una vez y no cuenta en el tiempo
+de cada práctica.</p>
+<h2 id="fichero">Fichero</h2>
+<p><code>data/cifar_subset.mat</code>, con las siguientes variables:</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Tipo / tamaño</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>X_train</code></td>
+<td><code>uint8</code>, <code>30000×32×32×3</code></td>
+<td>Imágenes de entrenamiento</td>
+</tr>
+<tr class="even">
+<td><code>y_train</code></td>
+<td><code>double</code>, <code>30000×1</code></td>
+<td>Etiquetas de entrenamiento (1–6)</td>
+</tr>
+<tr class="odd">
+<td><code>X_test</code></td>
+<td><code>uint8</code>, <code>6000×32×32×3</code></td>
+<td>Imágenes de test</td>
+</tr>
+<tr class="even">
+<td><code>y_test</code></td>
+<td><code>double</code>, <code>6000×1</code></td>
+<td>Etiquetas de test (1–6)</td>
+</tr>
+<tr class="odd">
+<td><code>class_names</code></td>
+<td><code>cell</code> de 6 strings</td>
+<td>Nombres de las clases, en el mismo orden que las etiquetas</td>
+</tr>
+</tbody>
+</table>
+<h3 id="cargar-el-dataset-en-matlab">Cargar el dataset en MATLAB</h3>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode matlab"><code class="sourceCode matlab"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="va">load</span>(<span class="ss">&#39;data/cifar_subset.mat&#39;</span>)<span class="op">;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">% Ver una imagen de ejemplo</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="va">imshow</span>(<span class="va">squeeze</span>(<span class="va">X_train</span>(<span class="fl">1</span><span class="op">,:,:,:</span>)))<span class="op">;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="va">title</span>(<span class="va">class_names</span>{<span class="va">y_train</span>(<span class="fl">1</span>)})<span class="op">;</span></span></code></pre></div>
+<h3 id="notas-importantes">Notas importantes</h3>
+<ul>
+<li>Las imágenes vienen en <strong><code>uint8</code> (valores
+0–255)</strong>. La mayoría de métodos (KNN, Bayesiano, MLP) esperan
+entradas en <code>double</code> y normalizadas (por ejemplo, dividiendo
+por 255). Las funciones de Deep Learning Toolbox
+(<code>trainNetwork</code>/<code>trainnet</code>) aceptan
+<code>uint8</code> pero conviene normalizar igual.</li>
+<li>Para KNN/Bayesiano/MLP “clásico” se recomienda trabajar con las
+imágenes <strong>aplanadas pero en color</strong> (vector de 32×32×3 =
+3072 valores): estos métodos tratan la imagen como un vector de
+características, no explotan la estructura espacial 2D, pero el color sí
+es información relevante para distinguir estas clases y no hay motivo
+para descartarlo (convertir a gris solo tira información útil). La CNN,
+en cambio, sí explota tanto el color como la estructura 2D, trabajando
+directamente sobre la imagen <code>32×32×3</code> sin aplanar.</li>
+<li>El dataset ya viene separado en train/test — no hace falta hacer el
+split vosotros, pero sí podéis (y se recomienda) separar una parte del
+train como validación si vais a ajustar hiperparámetros.</li>
+</ul>
+
+</main>
+<footer class="footer">
+  <p>MUIA/MUAR — IA Aplicada. Enunciados y dataset en el
+  <a href="https://github.com/cvar-upm-drone-team/IA-Aplicada">repositorio</a>.</p>
+</footer>
+</body>
+</html>
