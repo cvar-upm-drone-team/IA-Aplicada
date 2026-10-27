@@ -30,7 +30,7 @@ incluida la CNN, entrenen en minutos aunque no tengas tarjeta gráfica.
 
 El fichero que necesitas es **`cifar_subset.mat`** (44 MB).
 
-**→ Descárgalo de la release:** https://github.com/cvar-upm-drone-team/IA-Aplicada/releases/tag/dataset-release-v1
+**→ Descárgalo de la release:** https://github.com/cvar-upm-drone-team/IA-Aplicada/releases/tag/dataset_release
 
 No está dentro del árbol de git porque los ficheros binarios de este
 tamaño no se versionan bien en git; de ahí que se distribuya como

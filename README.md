@@ -28,7 +28,7 @@ minutos aunque no tengas tarjeta gráfica).
 El fichero que necesitáis es **`cifar_subset.mat`**, y se descarga de
 la release del repositorio:
 
-**→ [Descargar cifar_subset.mat](https://github.com/cvar-upm-drone-team/IA-Aplicada/releases/tag/dataset-release-v1)**
+**→ [Descargar cifar_subset.mat](https://github.com/cvar-upm-drone-team/IA-Aplicada/releases/tag/dataset_release)**
 
 Colocadlo en `data/cifar_subset.mat` dentro del repositorio, que es
 donde lo buscan los enunciados. Todos los detalles —formato, uso en

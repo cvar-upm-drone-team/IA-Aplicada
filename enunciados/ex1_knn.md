@@ -5,7 +5,7 @@ el efecto de reducir la dimensionalidad con PCA.
 
 ## Dataset
 
-Descarga `cifar_subset.mat` de la [release del repositorio](https://github.com/GPatiA2/MUIA-IA_Aplicada/releases/tag/dataset-release-v1)
+Descarga `cifar_subset.mat` de la [release del repositorio](https://github.com/cvar-upm-drone-team/IA-Aplicada/releases/tag/dataset_release)
 y colócalo en `data/cifar_subset.mat`. Formato completo y uso en Google
 Colab: [`docs/dataset.md`](../docs/dataset.md).
 
